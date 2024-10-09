@@ -3,6 +3,7 @@ syntax = "proto3";
 package chat_v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "chat-server/pkg/chat_v1;chat_v1";
 
@@ -31,6 +32,7 @@ message DeleteChatRequest {
 message Message {
   string from = 1;
   string text = 2;
+  google.protobuf.Timestamp timestamp = 3;
   
 }
 
