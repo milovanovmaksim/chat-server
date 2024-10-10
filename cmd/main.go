@@ -12,6 +12,6 @@ func main() {
 	server := server.Server{}
 	err := server.Start(grpcPort)
 	if err != nil {
-		log.Fatalf("Failed to start server | error: %v", err)
+		log.Fatalf("failed to start server | error: %v", err)
 	}
 }
