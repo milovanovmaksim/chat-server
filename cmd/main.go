@@ -21,7 +21,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	reflection.Register(s)
-	desc.RegisterChatServer(s, &server.Server{})
+	desc.RegisterChatV1Server(s, &server.Server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err = s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

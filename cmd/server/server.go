@@ -10,17 +10,17 @@ import (
 
 // Server ...
 type Server struct {
-	desc.UnimplementedChatServer
+	desc.UnimplementedChatV1Server
 }
 
 // Create ...
-func (s *Server) Create(_ context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
+func (s *Server) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	log.Printf("Create new chat with users: %v", req.Usernames)
-	return &desc.CreateChatResponse{Id: 1}, nil
+	return &desc.CreateResponse{Id: 1}, nil
 }
 
 // Delete ...
-func (s *Server) Delete(_ context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
+func (s *Server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
 	log.Printf("Delete chat with id: %d", req.GetId())
 	return &emptypb.Empty{}, nil
 }
