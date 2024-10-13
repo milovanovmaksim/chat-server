@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/olezhek28/microservices_course_boilerplate/cmd/server"
+	"github.com/milovanovmaksim/chat-server/cmd/server"
 )
 
 const grpcPort = 50051
