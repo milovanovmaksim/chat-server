@@ -1,11 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	"github.com/fatih/color"
+	"github.com/milovanovmaksim/chat-server/cmd/server"
 )
 
+const grpcPort = 50051
+
 func main() {
-	fmt.Println(color.GreenString("Hello, world!"))
+	server := server.Server{}
+
+	err := server.Start(grpcPort)
+	if err != nil {
+		log.Fatalf("failed to start server | error: %v", err)
+	}
 }
