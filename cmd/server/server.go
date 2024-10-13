@@ -43,13 +43,16 @@ func (s *Server) Start(grpcPort int64) error {
 		log.Fatalf("failed to listen: %v", err)
 		return err
 	}
+
 	server := grpc.NewServer()
 	reflection.Register(server)
 	desc.RegisterChatV1Server(server, s)
 	log.Printf("server listening at %v", lis.Addr())
+
 	if err = server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 		return err
 	}
+
 	return nil
 }
