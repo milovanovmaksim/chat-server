@@ -32,8 +32,8 @@ func (s *Server) DeleteChat(_ context.Context, req *desc.DeleteChatRequest) (*em
 
 // SendMessage отправление сообщения в чат.
 func (s *Server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
-	log.Printf("Send message to the chat with id: %d, with content: %s, from user with id: %d",
-		req.GetMessage().GetChatId(), req.GetMessage().GetText(), req.GetMessage().GetFrom())
+	log.Printf("Send message with content: %s, from user with id: %d",
+		req.GetMessage().GetText(), req.GetMessage().GetFrom())
 	return &emptypb.Empty{}, nil
 }
 
