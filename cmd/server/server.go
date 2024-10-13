@@ -13,30 +13,31 @@ import (
 	desc "github.com/milovanovmaksim/chat-server/pkg/chat_v1"
 )
 
-// Server ...
+// Server - чат-сервер.
 type Server struct {
 	desc.UnimplementedChatV1Server
 }
 
-// Create ...
-func (s *Server) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
-	log.Printf("Create new chat with users: %v", req.Usernames)
-	return &desc.CreateResponse{Id: 1}, nil
+// CreateChat создание нового чата.
+func (s *Server) CreateChat(_ context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
+	log.Printf("Create new chat with title: %s and user ids: %+v", req.GetTitleChat(), req.GetUserIds())
+	return &desc.CreateChatResponse{Id: 1}, nil
 }
 
-// Delete ...
-func (s *Server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
+// DeleteChat удаление чата.
+func (s *Server) DeleteChat(_ context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
 	log.Printf("Delete chat with id: %d", req.GetId())
 	return &emptypb.Empty{}, nil
 }
 
-// SendMessage ...
+// SendMessage отправление сообщения в чат.
 func (s *Server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*emptypb.Empty, error) {
-	log.Printf("Send message with content: %v", req.Message)
+	log.Printf("Send message to the chat with id: %d, with content: %s, from user with id: %d",
+		req.GetMessage().GetChatId(), req.GetMessage().GetText(), req.GetMessage().GetFrom())
 	return &emptypb.Empty{}, nil
 }
 
-// Start ...
+// Start старт чат-сервера.
 func (s *Server) Start(grpcPort int64) error {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", grpcPort))
 	if err != nil {
