@@ -20,8 +20,8 @@ func Connect(ctx context.Context, config *Config) (*PostgreSQL, error) {
 		return nil, err
 	}
 
-	postgreSql := newPostgreSQL(pool)
-	return &postgreSql, nil
+	postgreSQL := newPostgreSQL(pool)
+	return &postgreSQL, nil
 }
 
 func (p *PostgreSQL) GetPool() *pgxpool.Pool {
