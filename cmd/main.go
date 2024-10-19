@@ -11,8 +11,6 @@ import (
 	"github.com/milovanovmaksim/chat-server/internal/pgsql"
 )
 
-const grpcPort = 50051
-
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
