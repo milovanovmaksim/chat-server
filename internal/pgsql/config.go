@@ -45,11 +45,11 @@ func NewConfigFromEnv() (*Config, error) {
 	portAsString := os.Getenv(pgPort)
 	if len(portAsString) == 0 {
 		return nil, fmt.Errorf("%s must be set", pgPort)
-	} else {
-		port, err = strconv.ParseUint(portAsString, 0, 16)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse %s as uint16", pgPort)
-		}
+	}
+
+	port, err = strconv.ParseUint(portAsString, 0, 16)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse %s as uint16", pgPort)
 	}
 
 	host := os.Getenv(pgHost)
