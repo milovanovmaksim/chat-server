@@ -22,6 +22,7 @@ type Server struct {
 	desc.UnimplementedChatV1Server
 }
 
+// NewServer создает новый объект Server.
 func NewServer(pgSQL *pgsql.PostgreSQL, grpcConfig *grpcConfig.GrpcConfig) Server {
 	return Server{pgSQL, grpcConfig, desc.UnimplementedChatV1Server{}}
 }
