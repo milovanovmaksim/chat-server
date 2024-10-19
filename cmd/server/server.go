@@ -17,20 +17,20 @@ import (
 
 // Server - чат-сервер.
 type Server struct {
-	pgSql      *pgsql.PostgreSQL
+	pgSQL      *pgsql.PostgreSQL
 	grpcConfig *grpcConfig.GrpcConfig
 	desc.UnimplementedChatV1Server
 }
 
-func NewServer(pgSql *pgsql.PostgreSQL, grpcConfig *grpcConfig.GrpcConfig) Server {
-	return Server{pgSql, grpcConfig, desc.UnimplementedChatV1Server{}}
+func NewServer(pgSQL *pgsql.PostgreSQL, grpcConfig *grpcConfig.GrpcConfig) Server {
+	return Server{pgSQL, grpcConfig, desc.UnimplementedChatV1Server{}}
 }
 
 // CreateChat создание нового чата.
 func (s *Server) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
 	var id int64
 
-	pool := s.pgSql.GetPool()
+	pool := s.pgSQL.GetPool()
 
 	err := pool.QueryRow(ctx, "INSERT INTO chats (title, user_ids) VALUES($1, $2) RETURNING id", req.TitleChat, req.UserIds).Scan(&id)
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *Server) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*
 
 // DeleteChat удаление чата.
 func (s *Server) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
-	pool := s.pgSql.GetPool()
+	pool := s.pgSQL.GetPool()
 
 	_, err := pool.Exec(ctx, "DELETE FROM CHATS WHERE id = $1", req.Id)
 	if err != nil {
