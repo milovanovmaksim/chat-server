@@ -27,7 +27,7 @@ func Connect(ctx context.Context, config *Config) (*PostgreSQL, error) {
 	return &postgreSQL, nil
 }
 
-// GetPool предоставляет pgxpool.Pool.
+// GetPool возвращает pgxpool.Pool.
 func (p *PostgreSQL) GetPool() *pgxpool.Pool {
 	return p.Pool
 }
