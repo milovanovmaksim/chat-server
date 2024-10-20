@@ -19,12 +19,13 @@ import (
 type Server struct {
 	pgSQL      *pgsql.PostgreSQL
 	grpcConfig *grpcConfig.GrpcConfig
+	grpcServer *grpc.Server
 	desc.UnimplementedChatV1Server
 }
 
 // NewServer создает новый объект Server.
 func NewServer(pgSQL *pgsql.PostgreSQL, grpcConfig *grpcConfig.GrpcConfig) Server {
-	return Server{pgSQL, grpcConfig, desc.UnimplementedChatV1Server{}}
+	return Server{pgSQL, grpcConfig, nil, desc.UnimplementedChatV1Server{}}
 }
 
 // CreateChat создание нового чата.
@@ -69,15 +70,22 @@ func (s *Server) Start() error {
 		return err
 	}
 
-	server := grpc.NewServer()
-	reflection.Register(server)
-	desc.RegisterChatV1Server(server, s)
+	s.grpcServer = grpc.NewServer()
+	reflection.Register(s.grpcServer)
+	desc.RegisterChatV1Server(s.grpcServer, s)
 	log.Printf("server listening at %v", lis.Addr())
 
-	if err = server.Serve(lis); err != nil {
+	if err = s.grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 		return err
 	}
 
 	return nil
+}
+
+// Stop остановка сервера.
+func (s *Server) Stop() {
+	if s.grpcServer != nil {
+		s.grpcServer.Stop()
+	}
 }

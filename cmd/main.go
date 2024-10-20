@@ -41,4 +41,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to start a server || error: %v", err)
 	}
+
+	defer server.Stop()
 }
