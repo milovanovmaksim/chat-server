@@ -17,15 +17,15 @@ import (
 
 // Server - чат-сервер.
 type Server struct {
+	desc.UnimplementedChatV1Server
 	pgSQL      *pgsql.PostgreSQL
 	grpcConfig *grpcConfig.GrpcConfig
 	grpcServer *grpc.Server
-	desc.UnimplementedChatV1Server
 }
 
 // NewServer создает новый объект Server.
 func NewServer(pgSQL *pgsql.PostgreSQL, grpcConfig *grpcConfig.GrpcConfig) Server {
-	return Server{pgSQL, grpcConfig, nil, desc.UnimplementedChatV1Server{}}
+	return Server{desc.UnimplementedChatV1Server{}, pgSQL, grpcConfig, nil}
 }
 
 // CreateChat создание нового чата.
@@ -49,7 +49,7 @@ func (s *Server) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*
 
 	_, err := pool.Exec(ctx, "DELETE FROM CHATS WHERE id = $1", req.Id)
 	if err != nil {
-		fmt.Printf("failed to delete user: %v", err)
+		fmt.Printf("failed to delete user || err: %v", err)
 		return nil, err
 	}
 	return &emptypb.Empty{}, nil
