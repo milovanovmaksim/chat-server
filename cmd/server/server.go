@@ -10,23 +10,48 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	grpcConfig "github.com/milovanovmaksim/chat-server/internal/config"
+	"github.com/milovanovmaksim/chat-server/internal/pgsql"
 	desc "github.com/milovanovmaksim/chat-server/pkg/chat_v1"
 )
 
 // Server - чат-сервер.
 type Server struct {
 	desc.UnimplementedChatV1Server
+	pgSQL      *pgsql.PostgreSQL
+	grpcConfig *grpcConfig.GrpcConfig
+	grpcServer *grpc.Server
+}
+
+// NewServer создает новый объект Server.
+func NewServer(pgSQL *pgsql.PostgreSQL, grpcConfig *grpcConfig.GrpcConfig) Server {
+	return Server{desc.UnimplementedChatV1Server{}, pgSQL, grpcConfig, nil}
 }
 
 // CreateChat создание нового чата.
-func (s *Server) CreateChat(_ context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
-	log.Printf("Create new chat with title: %s and user ids: %+v", req.GetTitleChat(), req.GetUserIds())
-	return &desc.CreateChatResponse{Id: 1}, nil
+func (s *Server) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
+	var id int64
+
+	pool := s.pgSQL.GetPool()
+
+	err := pool.QueryRow(ctx, "INSERT INTO chats (title, user_ids) VALUES($1, $2) RETURNING id", req.TitleChat, req.UserIds).Scan(&id)
+	if err != nil {
+		fmt.Printf("failed to insert chat || err: %v", err)
+		return nil, err
+	}
+
+	return &desc.CreateChatResponse{Id: id}, nil
 }
 
 // DeleteChat удаление чата.
-func (s *Server) DeleteChat(_ context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
-	log.Printf("Delete chat with id: %d", req.GetId())
+func (s *Server) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
+	pool := s.pgSQL.GetPool()
+
+	_, err := pool.Exec(ctx, "DELETE FROM CHATS WHERE id = $1", req.Id)
+	if err != nil {
+		fmt.Printf("failed to delete user || err: %v", err)
+		return nil, err
+	}
 	return &emptypb.Empty{}, nil
 }
 
@@ -38,22 +63,29 @@ func (s *Server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*
 }
 
 // Start старт чат-сервера.
-func (s *Server) Start(grpcPort int64) error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", grpcPort))
+func (s *Server) Start() error {
+	lis, err := net.Listen("tcp", s.grpcConfig.Address())
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 		return err
 	}
 
-	server := grpc.NewServer()
-	reflection.Register(server)
-	desc.RegisterChatV1Server(server, s)
+	s.grpcServer = grpc.NewServer()
+	reflection.Register(s.grpcServer)
+	desc.RegisterChatV1Server(s.grpcServer, s)
 	log.Printf("server listening at %v", lis.Addr())
 
-	if err = server.Serve(lis); err != nil {
+	if err = s.grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 		return err
 	}
 
 	return nil
+}
+
+// Stop остановка сервера.
+func (s *Server) Stop() {
+	if s.grpcServer != nil {
+		s.grpcServer.Stop()
+	}
 }
