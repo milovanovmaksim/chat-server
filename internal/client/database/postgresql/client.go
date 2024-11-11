@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"github.com/milovanovmaksim/auth/internal/client/database"
+	"github.com/milovanovmaksim/chat-server/internal/client/database"
 )
 
 type pgClient struct {
