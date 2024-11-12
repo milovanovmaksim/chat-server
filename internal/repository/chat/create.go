@@ -8,6 +8,7 @@ import (
 	"github.com/milovanovmaksim/chat-server/internal/repository"
 )
 
+// CreateChat создает новый чат, сохраняет информацию о чате в БД.
 func (c *chatRepositoryImpl) CreateChat(ctx context.Context, request repository.CreateChatRequest) (*repository.CreateChatResponse, error) {
 	var response repository.CreateChatResponse
 
