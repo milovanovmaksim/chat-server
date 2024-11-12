@@ -65,7 +65,7 @@ func (s *Server) SendMessage(_ context.Context, req *desc.SendMessageRequest) (*
 func (s *Server) Start() error {
 	lis, err := net.Listen("tcp", s.grpcConfig.Address())
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Printf("failed to listen: %v", err)
 		return err
 	}
 
@@ -78,7 +78,7 @@ func (s *Server) Start() error {
 	log.Printf("server listening at %v", lis.Addr())
 
 	if err = s.grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Printf("failed to serve: %v", err)
 		return err
 	}
 
