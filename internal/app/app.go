@@ -9,6 +9,7 @@ import (
 	"github.com/milovanovmaksim/chat-server/internal/server/grpc"
 )
 
+// App чат-приложение.
 type App struct {
 	diContainer diContainer
 	grpcServer  grpc.Server
@@ -51,7 +52,7 @@ func (a *App) initDeps(ctx context.Context) error {
 	inits := []func(context.Context) error{
 		a.initConfig,
 		a.initGRPCServer,
-		a.initdiContainer,
+		a.initDiContainer,
 	}
 	for _, f := range inits {
 		err := f(ctx)
@@ -69,7 +70,7 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 	return nil
 }
 
-func (a *App) initdiContainer(_ context.Context) error {
+func (a *App) initDiContainer(_ context.Context) error {
 	a.diContainer = newDiContainer()
 
 	return nil
