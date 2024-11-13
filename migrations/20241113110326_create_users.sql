@@ -14,5 +14,5 @@ CREATE TABLE chat_users (
 );
 
 -- +goose Down
-DROP TABLE chats;
+DROP TABLE users;
 DROP TABLE chat_users;
