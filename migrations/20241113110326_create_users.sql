@@ -1,7 +1,6 @@
 -- +goose Up
 CREATE TABLE users (
-  id serial PRIMARY KEY,
-  user_id bigint not null unique,
+  user_id bigint PRIMARY KEY,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
