@@ -13,7 +13,7 @@ func (c *chatRepositoryImpl) CreateChat(ctx context.Context, request repository.
 	var response repository.CreateChatResponse
 
 	query := database.Query{Name: "Create chat", QueryRaw: "INSERT INTO chats (title, user_ids) VALUES($1, $2) RETURNING id"}
-	err := c.db.DB().ScanOneContext(ctx, response, query, request.TitleChat, request.UserIds)
+	err := c.db.DB().ScanOneContext(ctx, response, query, request.TitleChat, request.UserIDs)
 	if err != nil {
 		log.Printf("failed to insert user || err: %v", err)
 		return nil, err
