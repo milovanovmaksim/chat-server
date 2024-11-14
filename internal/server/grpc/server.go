@@ -32,7 +32,7 @@ func NewServer(grpcConfig server.Config, service service.ChatService) Server {
 func (s *Server) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
 	chat, err := s.service.CreateChat(ctx, service.CreateChatRequest{
 		TitleChat: req.TitleChat,
-		UserIds:   req.UserIds,
+		UserIDs:   req.UserIds,
 	})
 	if err != nil {
 		log.Printf("failed to create new chat || error: %v", err)

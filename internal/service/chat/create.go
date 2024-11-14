@@ -10,7 +10,7 @@ import (
 
 // CreateChat создает новый чат.
 func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.CreateChatRequest) (*service.CreateChatResponse, error) {
-	chat, err := c.chatRepository.CreateChat(ctx, repository.CreateChatRequest{TitleChat: request.TitleChat, UserIDs: request.UserIds})
+	chat, err := c.chatRepository.CreateChat(ctx, repository.CreateChatRequest{TitleChat: request.TitleChat, UserIDs: request.UserIDs})
 	if err != nil {
 		log.Printf("failed to create new chat || error: %v", err)
 		return nil, err
