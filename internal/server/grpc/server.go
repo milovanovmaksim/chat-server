@@ -18,13 +18,13 @@ import (
 // Server - чат-сервер.
 type Server struct {
 	desc.UnimplementedChatV1Server
-	grpcConfig server.ServerConfig
+	grpcConfig server.Config
 	grpcServer *grpc.Server
 	service    service.ChatService
 }
 
 // NewServer создает новый Server объект.
-func NewServer(grpcConfig server.ServerConfig, service service.ChatService) Server {
+func NewServer(grpcConfig server.Config, service service.ChatService) Server {
 	return Server{desc.UnimplementedChatV1Server{}, grpcConfig, nil, service}
 }
 

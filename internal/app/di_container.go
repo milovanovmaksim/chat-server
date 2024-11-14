@@ -21,7 +21,7 @@ type diContainer struct {
 	chatService    service.ChatService
 	dbClient       database.Client
 	pgConfig       database.DBConfig
-	grpcConfig     server.ServerConfig
+	grpcConfig     server.Config
 	txManager      database.TxManager
 }
 
@@ -58,10 +58,7 @@ func (di *diContainer) DBClient(ctx context.Context) database.Client {
 		dbClient := postgresql.NewClient(pg)
 		di.dbClient = dbClient
 
-		closer.Add(func() error {
-			di.dbClient.Close()
-			return nil
-		})
+		closer.Add(di.dbClient.Close)
 	}
 
 	return di.dbClient
@@ -82,7 +79,7 @@ func (di *diContainer) DBConfig() database.DBConfig {
 }
 
 // GRPCConfig возвращает объект, удовлетворяющий интерфейсу server.ServerConfig.
-func (di *diContainer) GRPCConfig() server.ServerConfig {
+func (di *diContainer) GRPCConfig() server.Config {
 	if di.grpcConfig == nil {
 		cfg, err := grpc.NewGrpcConfigFromEnv()
 		if err != nil {
