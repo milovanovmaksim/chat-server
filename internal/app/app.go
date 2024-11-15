@@ -38,7 +38,7 @@ func (a *App) Run() error {
 	return a.grpcServer.Start()
 }
 
-func (a *App) initConfig(_ctx context.Context) error {
+func (a *App) initConfig(_ context.Context) error {
 	err := godotenv.Load(a.envPath)
 	if err != nil {
 		log.Printf("failed to load config || err: %v", err)
