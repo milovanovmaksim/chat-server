@@ -40,13 +40,13 @@ func (s *Server) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*
 	}
 
 	return &desc.CreateChatResponse{
-		Id: chat.Id,
+		Id: chat.ID,
 	}, nil
 }
 
 // DeleteChat удаление чата.
 func (s *Server) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
-	err := s.service.DeleteChat(ctx, service.DeleteChatRequest{Id: req.Id})
+	err := s.service.DeleteChat(ctx, service.DeleteChatRequest{ID: req.Id})
 	if err != nil {
 		log.Printf("failed to delete the chat || error: %v", err)
 		return nil, err

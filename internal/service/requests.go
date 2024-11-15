@@ -8,5 +8,5 @@ type CreateChatRequest struct {
 
 // DeleteChatRequest запрос на удаление чата.
 type DeleteChatRequest struct {
-	Id int64
+	ID int64
 }

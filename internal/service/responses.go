@@ -1,5 +1,6 @@
 package service
 
+// CreateChatResponse ответ на запрос о создании нового чата.
 type CreateChatResponse struct {
-	Id int64
+	ID int64
 }

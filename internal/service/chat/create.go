@@ -16,5 +16,5 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.Create
 		return nil, err
 	}
 
-	return &service.CreateChatResponse{Id: chat.Id}, nil
+	return &service.CreateChatResponse{ID: chat.ID}, nil
 }

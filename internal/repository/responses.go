@@ -1,5 +1,6 @@
 package repository
 
+// CreateChatResponse ответ на запрос о создании нового чата.
 type CreateChatResponse struct {
-	Id int64 `db:"id"`
+	ID int64 `db:"id"`
 }
