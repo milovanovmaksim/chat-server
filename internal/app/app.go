@@ -16,7 +16,7 @@ type App struct {
 	envPath     string
 }
 
-// NeaApp создает новый объект App.
+// NewApp создает новый объект App.
 func NewApp(ctx context.Context, envPath string) (*App, error) {
 	app := &App{envPath: envPath}
 
