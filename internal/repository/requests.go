@@ -11,10 +11,12 @@ type DeleteChatRequest struct {
 	ID int64
 }
 
+// CreateUserRequest запрос на создание нового пользователя чатом.
 type CreateUserRequest struct {
 	userID int64
 }
 
+// DeleteUserRequest запрос на удаление пользователя из чата.
 type DeleteUserRequest struct {
 	userID int64
 }
