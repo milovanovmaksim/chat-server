@@ -10,3 +10,11 @@ type CreateChatRequest struct {
 type DeleteChatRequest struct {
 	ID int64
 }
+
+type CreateUserRequest struct {
+	userID int64
+}
+
+type DeleteUserRequest struct {
+	userID int64
+}
