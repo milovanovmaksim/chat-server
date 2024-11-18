@@ -12,10 +12,12 @@ type userRepositoryImpl struct {
 	db database.Client
 }
 
+// NewUserRepository возвращает новый объект, который удовлетворяет интерфейсу repository.UserRepository.
 func NewUserRepository(db database.Client) repository.UserRepository {
 	return &userRepositoryImpl{db}
 }
 
+// UserExists проверяет существует ли пользователь с таким id в БД.
 func (u *userRepositoryImpl) UserExists(ctx context.Context, request int64) (bool, error) {
 	var count int64
 
