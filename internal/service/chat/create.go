@@ -2,7 +2,6 @@ package chat
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/milovanovmaksim/chat-server/internal/repository"
@@ -29,7 +28,7 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.Create
 				return errTx
 			}
 
-			if ok != true {
+			if !ok {
 				user, errTx = c.userRepository.CreateUser(ctx, repository.CreateUserRequest{UserID: userID})
 				if errTx != nil {
 					log.Printf("failed to create new chat || error: %v", errTx)
