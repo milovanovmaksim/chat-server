@@ -6,7 +6,7 @@ import "context"
 type ChatRepository interface {
 	CreateChat(ctx context.Context, request CreateChatRequest) (*CreateChatResponse, error)
 	DeleteCaht(ctx context.Context, request DeleteChatRequest) error
-	CreateChatUser(ctx context.Context, user_id int64, chat_id int64) (int64, error)
+	CreateChatUser(ctx context.Context, userID int64, chatID int64) (int64, error)
 }
 
 // UserRepository интерфейс, определяющий набор методов для работы с таблицей "users" базы данных.

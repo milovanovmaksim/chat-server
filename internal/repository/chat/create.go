@@ -24,12 +24,12 @@ func (c *chatRepositoryImpl) CreateChat(ctx context.Context, request repository.
 }
 
 // CreateChatUser создает запись в таблицу "user_chats".
-func (c *chatRepositoryImpl) CreateChatUser(ctx context.Context, user_id int64, chat_id int64) (int64, error) {
+func (c *chatRepositoryImpl) CreateChatUser(ctx context.Context, userID int64, chatID int64) (int64, error) {
 	var id int64
 
 	query := database.Query{Name: "Create chat user", QueryRaw: "INSERT INTO user_chats (user_id, chat_id) VALUES($1, $2) RETURNING id"}
 
-	err := c.db.DB().ScanOneContext(ctx, &id, query, user_id, chat_id)
+	err := c.db.DB().ScanOneContext(ctx, &id, query, userID, chatID)
 	if err != nil {
 		log.Printf("failed to create chat_user || error: %v", err)
 		return 0, err
