@@ -8,10 +8,11 @@ import (
 
 type chatServiceImpl struct {
 	chatRepository repository.ChatRepository
+	userRepository repository.UserRepository
 	txManager      database.TxManager
 }
 
 // NewChatService создает новый объект, удовлетворяющий интерфейсу service.ChatService.
-func NewChatService(chatRepository repository.ChatRepository, txManager database.TxManager) service.ChatService {
-	return &chatServiceImpl{chatRepository, txManager}
+func NewChatService(chatRepository repository.ChatRepository, userRepository repository.UserRepository, txManager database.TxManager) service.ChatService {
+	return &chatServiceImpl{chatRepository, userRepository, txManager}
 }
