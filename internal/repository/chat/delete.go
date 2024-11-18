@@ -14,7 +14,7 @@ func (c *chatRepositoryImpl) DeleteCaht(ctx context.Context, request repository.
 
 	_, err := c.db.DB().ExecContext(ctx, query, request.ID)
 	if err != nil {
-		log.Printf("failed to delete user || error: %v", err)
+		log.Printf("failed to delete chat || error: %v", err)
 		return err
 	}
 
