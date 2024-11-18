@@ -10,6 +10,7 @@ import (
 	"github.com/milovanovmaksim/chat-server/internal/closer"
 	"github.com/milovanovmaksim/chat-server/internal/repository"
 	chatRepo "github.com/milovanovmaksim/chat-server/internal/repository/chat"
+	"github.com/milovanovmaksim/chat-server/internal/repository/user"
 	"github.com/milovanovmaksim/chat-server/internal/server"
 	"github.com/milovanovmaksim/chat-server/internal/server/grpc"
 	"github.com/milovanovmaksim/chat-server/internal/service"
@@ -18,6 +19,7 @@ import (
 
 type diContainer struct {
 	chatRepository repository.ChatRepository
+	userRepository repository.UserRepository
 	chatService    service.ChatService
 	dbClient       database.Client
 	pgConfig       database.DBConfig
@@ -41,10 +43,18 @@ func (di *diContainer) ChatRepository(ctx context.Context) repository.ChatReposi
 // ChatService возврашщает объект, удовлетворяющий интерфейсу service.ChatService.
 func (di *diContainer) ChatService(ctx context.Context) service.ChatService {
 	if di.chatService == nil {
-		di.chatService = chat.NewChatService(di.ChatRepository(ctx), di.TxManager(ctx))
+		di.chatService = chat.NewChatService(di.ChatRepository(ctx), di.UserRepository(ctx), di.TxManager(ctx))
 	}
 
 	return di.chatService
+}
+
+func (di *diContainer) UserRepository(ctx context.Context) repository.UserRepository {
+	if di.userRepository == nil {
+		di.userRepository = user.NewUserRepository(di.DBClient(ctx))
+	}
+
+	return di.userRepository
 }
 
 // DBClient возвращает объект, удовлетвoряющий интерфейсу database.Client.
