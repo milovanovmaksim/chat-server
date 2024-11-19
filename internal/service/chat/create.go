@@ -2,7 +2,6 @@ package chat
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"log"
 
@@ -13,7 +12,6 @@ import (
 // CreateChat создает новый чат.
 func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.CreateChatRequest) (*service.CreateChatResponse, error) {
 	var chat *repository.CreateChatResponse
-	var createChatRequest repository.CreateChatRequest
 
 	if len(request.UserIDs) == 0 {
 		return nil, errors.New("user_ids is empty")
@@ -22,13 +20,7 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.Create
 	err := c.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
 
-		if request.TitleChat == "" {
-			createChatRequest = repository.CreateChatRequest{TitleChat: sql.NullString{Valid: false}}
-		} else {
-			createChatRequest = repository.CreateChatRequest{TitleChat: sql.NullString{String: request.TitleChat, Valid: true}}
-		}
-
-		chat, errTx = c.chatRepository.CreateChat(ctx, createChatRequest)
+		chat, errTx = c.chatRepository.CreateChat(ctx, request.Into())
 		if errTx != nil {
 			log.Printf("failed to create new chat || error: %v", errTx)
 			return errTx
