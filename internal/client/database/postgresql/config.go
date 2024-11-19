@@ -77,5 +77,5 @@ func NewConfigFromEnv() (*Config, error) {
 // Dsn возвращает DSN(имя источника данных), которое будет использоваться
 // для подключения к базе данных PostgreSQL.
 func (c *Config) Dsn() string {
-	return fmt.Sprintf("host=%s port=%v dbname=%s user=%s password=%s sslmode=%v", c.Host, c.Port, c.DatabaseName, c.Username, c.Password, c.SslMode)
+	return fmt.Sprintf("host=%s port=%v dbname=%s user=%s password=%s sslmode=%v pool_max_conns=10", c.Host, c.Port, c.DatabaseName, c.Username, c.Password, c.SslMode)
 }
