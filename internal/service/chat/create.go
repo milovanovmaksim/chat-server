@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"sync"
 
 	"github.com/milovanovmaksim/chat-server/internal/repository"
 	"github.com/milovanovmaksim/chat-server/internal/service"
@@ -26,27 +27,36 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.Create
 			return errTx
 		}
 
-		for _, userID := range request.UserIDs {
-			ok, errTx := c.userRepository.UserExists(ctx, userID)
-			if errTx != nil {
-				log.Printf("failed to get user || error: %v", errTx)
-				return errTx
-			}
+		wg := sync.WaitGroup{}
 
-			if !ok {
-				_, errTx = c.userRepository.CreateUser(ctx, repository.CreateUserRequest{UserID: userID})
+		for _, userID := range request.UserIDs {
+			wg.Add(1)
+			go func() error {
+				defer wg.Done()
+
+				ok, errTx := c.userRepository.UserExists(ctx, userID)
+				if errTx != nil {
+					log.Printf("failed to get user || error: %v", errTx)
+					return errTx
+				}
+
+				if !ok {
+					_, errTx = c.userRepository.CreateUser(ctx, repository.CreateUserRequest{UserID: userID})
+					if errTx != nil {
+						log.Printf("failed to create new chat || error: %v", errTx)
+						return errTx
+					}
+				}
+
+				_, errTx = c.chatRepository.CreateChatUser(ctx, userID, chat.ID)
 				if errTx != nil {
 					log.Printf("failed to create new chat || error: %v", errTx)
 					return errTx
 				}
-			}
-
-			_, errTx = c.chatRepository.CreateChatUser(ctx, userID, chat.ID)
-			if errTx != nil {
-				log.Printf("failed to create new chat || error: %v", errTx)
-				return errTx
-			}
+				return nil
+			}()
 		}
+		wg.Wait()
 
 		return nil
 	})
