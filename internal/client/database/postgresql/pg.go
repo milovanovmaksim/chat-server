@@ -55,12 +55,14 @@ func (p *PostgreSQL) Ping(ctx context.Context) error {
 // Может быть использован в транзакциях при передачи контекста (context.Context) с ключом postgresql.TxKey и значением,
 // удовлетворяющем интерфейсу pgx.Tx.
 func (p *PostgreSQL) ScanOneContext(ctx context.Context, dest interface{}, q database.Query, args ...interface{}) error {
-	row, err := p.QueryContext(ctx, q, args...)
+	rows, err := p.QueryContext(ctx, q, args...)
 	if err != nil {
 		return err
 	}
 
-	return pgxscan.ScanOne(dest, row)
+	defer rows.Close()
+
+	return pgxscan.ScanOne(dest, rows)
 }
 
 // QueryContext делегирует работу (pgxpool.Pool).Query.
@@ -99,6 +101,9 @@ func (p *PostgreSQL) ScanAllContext(ctx context.Context, dest interface{}, q dat
 	if err != nil {
 		return err
 	}
+
+	defer rows.Close()
+	
 	return pgxscan.ScanAll(dest, rows)
 }
 
