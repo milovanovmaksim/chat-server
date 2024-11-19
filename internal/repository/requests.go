@@ -1,8 +1,10 @@
 package repository
 
+import "database/sql"
+
 // CreateChatRequest запрос на создание нового чата.
 type CreateChatRequest struct {
-	TitleChat string
+	TitleChat sql.NullString
 }
 
 // DeleteChatRequest запрос на удаление чата.
