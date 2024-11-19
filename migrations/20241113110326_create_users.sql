@@ -6,7 +6,7 @@ CREATE TABLE users (
 
 
 CREATE TABLE chat_users (
-  id bigint PRIMARY KEY,
+  id serial PRIMARY KEY,
   chat_id bigint not null references chats (id) on delete cascade,
   user_id bigint not null references users (user_id) on delete cascade,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
