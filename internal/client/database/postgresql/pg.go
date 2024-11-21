@@ -103,7 +103,7 @@ func (p *PostgreSQL) ScanAllContext(ctx context.Context, dest interface{}, q dat
 	}
 
 	defer rows.Close()
-	
+
 	return pgxscan.ScanAll(dest, rows)
 }
 

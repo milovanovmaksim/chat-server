@@ -12,6 +12,7 @@ type CreateChatRequest struct {
 	UserIDs   []int64
 }
 
+// Into преобразует из service.CreateChatRequest в repository.CreateChatRequest.
 func (c CreateChatRequest) Into() repository.CreateChatRequest {
 	var titleChat sql.NullString
 

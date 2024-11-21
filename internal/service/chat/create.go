@@ -12,7 +12,6 @@ import (
 // CreateChat создает новый чат.
 func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.CreateChatRequest) (*service.CreateChatResponse, error) {
 	var chat *repository.CreateChatResponse
-	var user *repository.CreateUserResponse
 
 	if len(request.UserIDs) == 0 {
 		return nil, errors.New("user_ids is empty")
@@ -28,13 +27,21 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.Create
 		}
 
 		for _, userID := range request.UserIDs {
-			user, errTx = c.userRepository.CreateUser(ctx, repository.CreateUserRequest{UserID: userID})
+			ok, errTx := c.userRepository.UserExists(ctx, userID)
 			if errTx != nil {
-				log.Printf("failed to create new chat || error: %v", errTx)
+				log.Printf("failed to check existing user || error: %v", errTx)
 				return errTx
 			}
 
-			_, errTx = c.chatRepository.CreateChatUser(ctx, user.ID, chat.ID)
+			if !ok {
+				_, errTx = c.userRepository.CreateUser(ctx, repository.CreateUserRequest{UserID: userID})
+				if errTx != nil {
+					log.Printf("failed to create new chat || error: %v", errTx)
+					return errTx
+				}
+			}
+
+			_, errTx = c.chatRepository.CreateChatUser(ctx, userID, chat.ID)
 			if errTx != nil {
 				log.Printf("failed to create new chat || error: %v", errTx)
 				return errTx

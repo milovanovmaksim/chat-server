@@ -13,4 +13,5 @@ type ChatRepository interface {
 type UserRepository interface {
 	CreateUser(ctx context.Context, request CreateUserRequest) (*CreateUserResponse, error)
 	DeleteUser(ctx context.Context, request DeleteUserRequest) error
+	UserExists(ctx context.Context, request int64) (bool, error)
 }
