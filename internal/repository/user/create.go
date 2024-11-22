@@ -20,6 +20,7 @@ func (u *userRepositoryImpl) CreateUser(ctx context.Context, request repository.
 			response.ID = request.UserID
 			return &response, nil
 		}
+
 		log.Printf("failed to insert user || err: %v", err)
 		return nil, err
 	}
