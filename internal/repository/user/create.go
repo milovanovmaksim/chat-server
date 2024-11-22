@@ -15,6 +15,7 @@ func (u *userRepositoryImpl) CreateUser(ctx context.Context, request repository.
 	query := database.Query{Name: "Create user", QueryRaw: "INSERT INTO users (user_id) VALUES($1) ON CONFLICT DO NOTHING RETURNING user_id"}
 	err := u.db.DB().ScanOneContext(ctx, &response, query, request.UserID)
 	if err != nil {
+		// Проверка на дубликат. Ни одной строки не вернется, если пользователь уже существует.
 		if err.Error() == "no rows in result set" {
 			response.ID = request.UserID
 			return &response, nil
