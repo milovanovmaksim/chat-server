@@ -48,5 +48,3 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request model.CreateCh
 
 	return chatID, nil
 }
-
-
