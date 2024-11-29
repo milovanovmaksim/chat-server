@@ -2,40 +2,39 @@ package chat
 
 import (
 	"context"
-	"errors"
 	"log"
 
-	"github.com/milovanovmaksim/chat-server/internal/repository"
-	"github.com/milovanovmaksim/chat-server/internal/service"
+	"github.com/milovanovmaksim/chat-server/internal/service/chat/model"
 )
 
 // CreateChat создает новый чат.
-func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.CreateChatRequest) (*service.CreateChatResponse, error) {
-	var chat *repository.CreateChatResponse
+func (c *chatServiceImpl) CreateChat(ctx context.Context, request model.CreateChatRequest) (int64, error) {
+	var chatID int64
 
-	if len(request.UserIDs) == 0 {
-		return nil, errors.New("user_ids is empty")
+	errValid := ValidateInputData(request)
+	if errValid != nil {
+		return 0, errValid
 	}
 
 	err := c.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
 
-		chat, errTx = c.chatRepository.CreateChat(ctx, request.Into())
+		chatID, errTx = c.chatRepository.CreateChat(ctx, request.TitleChat)
 		if errTx != nil {
-			log.Printf("failed to create new chat || error: %v", errTx)
+			log.Printf("failed to create new chat: %v", errTx)
 			return errTx
 		}
 
 		for _, userID := range request.UserIDs {
-			_, errTx = c.userRepository.CreateUser(ctx, repository.CreateUserRequest{UserID: userID})
+			_, errTx = c.userRepository.CreateUser(ctx, userID)
 			if errTx != nil {
-				log.Printf("failed to create new user || error: %v", errTx)
+				log.Printf("failed to create new user: %v", errTx)
 				return errTx
 			}
 
-			_, errTx = c.chatRepository.CreateChatUser(ctx, userID, chat.ID)
+			_, errTx = c.chatRepository.CreateChatUser(ctx, userID, chatID)
 			if errTx != nil {
-				log.Printf("failed to create new chat_user || error: %v", errTx)
+				log.Printf("failed to create new chat_user: %v", errTx)
 				return errTx
 			}
 		}
@@ -43,9 +42,11 @@ func (c *chatServiceImpl) CreateChat(ctx context.Context, request service.Create
 		return nil
 	})
 	if err != nil {
-		log.Printf("failed to create new chat || error: %v", err)
-		return nil, err
+		log.Printf("failed to create new chat: %v", err)
+		return 0, err
 	}
 
-	return &service.CreateChatResponse{ID: chat.ID}, nil
+	return chatID, nil
 }
+
+

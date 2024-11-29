@@ -5,22 +5,21 @@ import (
 	"log"
 
 	"github.com/milovanovmaksim/chat-server/internal/client/database"
-	"github.com/milovanovmaksim/chat-server/internal/repository"
 )
 
 // CreateChat создает новый чат в БД.
-func (c *chatRepositoryImpl) CreateChat(ctx context.Context, request repository.CreateChatRequest) (*repository.CreateChatResponse, error) {
-	var response repository.CreateChatResponse
+func (c *chatRepositoryImpl) CreateChat(ctx context.Context, chatTitle string) (int64, error) {
+	var chatID int64
 
 	query := database.Query{Name: "Create chat", QueryRaw: "INSERT INTO chats (title) VALUES($1) RETURNING id"}
 
-	err := c.db.DB().ScanOneContext(ctx, &response, query, request.TitleChat)
+	err := c.db.DB().ScanOneContext(ctx, &chatID, query, chatTitle)
 	if err != nil {
-		log.Printf("failed to insert chat || err: %v", err)
-		return nil, err
+		log.Printf("failed to insert chat: %v", err)
+		return 0, err
 	}
 
-	return &response, nil
+	return chatID, nil
 }
 
 // CreateChatUser создает запись в таблицу "user_chats".
@@ -31,7 +30,7 @@ func (c *chatRepositoryImpl) CreateChatUser(ctx context.Context, userID int64, c
 
 	err := c.db.DB().ScanOneContext(ctx, &id, query, userID, chatID)
 	if err != nil {
-		log.Printf("failed to create chat_user || error: %v", err)
+		log.Printf("failed to create chat_user: %v", err)
 		return 0, err
 	}
 

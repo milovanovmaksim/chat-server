@@ -12,6 +12,7 @@ import (
 	"github.com/milovanovmaksim/chat-server/internal/closer"
 	"github.com/milovanovmaksim/chat-server/internal/server"
 	"github.com/milovanovmaksim/chat-server/internal/service"
+	serviceModel "github.com/milovanovmaksim/chat-server/internal/service/chat/model"
 	desc "github.com/milovanovmaksim/chat-server/pkg/chat_v1"
 )
 
@@ -30,25 +31,25 @@ func NewServer(grpcConfig server.Config, service service.ChatService) Server {
 
 // CreateChat создание нового чата.
 func (s *Server) CreateChat(ctx context.Context, req *desc.CreateChatRequest) (*desc.CreateChatResponse, error) {
-	chat, err := s.service.CreateChat(ctx, service.CreateChatRequest{
+	chatID, err := s.service.CreateChat(ctx, serviceModel.CreateChatRequest{
 		TitleChat: req.TitleChat,
 		UserIDs:   req.UserIds,
 	})
 	if err != nil {
-		log.Printf("failed to create new chat || error: %v", err)
+		log.Printf("failed to create new chat: %v", err)
 		return nil, err
 	}
 
 	return &desc.CreateChatResponse{
-		Id: chat.ID,
+		Id: chatID,
 	}, nil
 }
 
 // DeleteChat удаление чата.
 func (s *Server) DeleteChat(ctx context.Context, req *desc.DeleteChatRequest) (*emptypb.Empty, error) {
-	err := s.service.DeleteChat(ctx, service.DeleteChatRequest{ID: req.Id})
+	err := s.service.DeleteChat(ctx, req.Id)
 	if err != nil {
-		log.Printf("failed to delete the chat || error: %v", err)
+		log.Printf("failed to delete the chat: %v", err)
 		return nil, err
 	}
 	return &emptypb.Empty{}, nil
