@@ -21,11 +21,13 @@ func NewUserRepository(db database.Client) repository.UserRepository {
 func (u *userRepositoryImpl) UserExists(ctx context.Context, request int64) (bool, error) {
 	var count int64
 
-	query := database.Query{Name: "Does user exist?", QueryRaw: "SELECT COUNT(user_id) FROM users WHERE user_id=$1"}
+	queryRow := "SELECT COUNT(user_id) FROM users WHERE user_id=$1"
+
+	query := database.Query{Name: "Does user exist?", QueryRaw: queryRow}
 
 	err := u.db.DB().ScanOneContext(ctx, &count, query, request)
 	if err != nil {
-		log.Printf("failed to count users || error: %v", err)
+		log.Printf("failed to count users: %v", err)
 		return false, err
 	}
 
