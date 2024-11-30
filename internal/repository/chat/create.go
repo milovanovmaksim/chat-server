@@ -11,7 +11,9 @@ import (
 func (c *chatRepositoryImpl) CreateChat(ctx context.Context, chatTitle string) (int64, error) {
 	var chatID int64
 
-	query := database.Query{Name: "Create chat", QueryRaw: "INSERT INTO chats (title) VALUES($1) RETURNING id"}
+	queryRow := "INSERT INTO chats (title) VALUES($1) RETURNING id"
+
+	query := database.Query{Name: "Create chat", QueryRaw: queryRow}
 
 	err := c.db.DB().ScanOneContext(ctx, &chatID, query, chatTitle)
 	if err != nil {

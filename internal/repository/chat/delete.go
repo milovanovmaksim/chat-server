@@ -9,7 +9,9 @@ import (
 
 // DeleteCaht удаляет чат из БД.
 func (c *chatRepositoryImpl) DeleteCaht(ctx context.Context, chatID int64) error {
-	query := database.Query{Name: "Delete chat", QueryRaw: "DELETE FROM CHATS WHERE id = $1"}
+	queryRow := "DELETE FROM CHATS WHERE id = $1"
+
+	query := database.Query{Name: "Delete chat", QueryRaw: queryRow}
 
 	_, err := c.db.DB().ExecContext(ctx, query, chatID)
 	if err != nil {
