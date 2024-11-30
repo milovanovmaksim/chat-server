@@ -22,16 +22,16 @@ get-deps:
 
 
 generate:
-	make generate-auth-api
+	make generate-chat-api
 
-generate-auth-api:
-	mkdir -p pkg/auth_v1
-	protoc --proto_path api/auth_v1 \
-	--go_out=pkg/auth_v1 --go_opt=paths=source_relative \
+generate-chat-api:
+	mkdir -p pkg/chat_v1
+	protoc --proto_path api/chat_v1 \
+	--go_out=pkg/chat_v1 --go_opt=paths=source_relative \
 	--plugin=protoc-gen-go=bin/protoc-gen-go \
-	--go-grpc_out=pkg/auth_v1 --go-grpc_opt=paths=source_relative \
+	--go-grpc_out=pkg/chat_v1 --go-grpc_opt=paths=source_relative \
 	--plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc \
-	api/auth_v1/auth.proto
+	api/chat_v1/chat.proto
 
 local-migration-status:
 	$(LOCAL_BIN)/goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} status -v
