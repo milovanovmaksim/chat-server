@@ -1,7 +1,7 @@
 package chat
 
 // ValidationError представляет ошибку валидации входных данных.
-// Удовлетворяет интерфейсу errors.Error.
+// Удовлетворяет интерфейсу error.
 type ValidationError struct {
 	String string
 }
